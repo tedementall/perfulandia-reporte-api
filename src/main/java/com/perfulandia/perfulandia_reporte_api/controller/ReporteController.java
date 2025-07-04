@@ -1,6 +1,7 @@
 package com.perfulandia.perfulandia_reporte_api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.perfulandia.perfulandia_reporte_api.services.ReporteService;
@@ -59,6 +60,31 @@ public class ReporteController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @GetMapping("/hateoas/{id}")
+    public ResponseEntity<ReporteDTO> obtenerHATEOAS(@PathVariable Integer id) {
+        return Service.obtenerReportePorId(id)
+            .map(dto -> {
+                dto.add(Link.of("http://localhost:8888/api/proxy/reporte/" + dto.getId()).withSelfRel());
+                dto.add(Link.of("http://localhost:8888/api/proxy/reporte/" + dto.getId()).withRel("Modificar HATEOAS").withType("PUT"));
+                dto.add(Link.of("http://localhost:8888/api/proxy/reporte/" + dto.getId()).withRel("Eliminar HATEOAS").withType("DELETE"));
+                return ResponseEntity.ok(dto);
+            })
+            .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/hateoas")
+    public List<ReporteDTO> obtenerTodosHATEOAS() {
+        List<ReporteDTO> lista = Service.obtenerReportes();
+
+        for (ReporteDTO dto : lista) {
+            
+            dto.add(Link.of("http://localhost:8888/api/proxy/reporte").withRel("Get todos HATEOAS"));
+            dto.add(Link.of("http://localhost:8888/api/proxy/reporte/" + dto.getId()).withRel("Crear HATEOAS").withType("POST"));
+        }
+
+        return lista;
     }
     
     
