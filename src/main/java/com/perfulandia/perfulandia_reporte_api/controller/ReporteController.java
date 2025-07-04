@@ -66,9 +66,9 @@ public class ReporteController {
     public ResponseEntity<ReporteDTO> obtenerHATEOAS(@PathVariable Integer id) {
         return Service.obtenerReportePorId(id)
             .map(dto -> {
-                dto.add(Link.of("http://localhost:8888/api/proxy/productos/" + dto.getId()).withSelfRel());
-                dto.add(Link.of("http://localhost:8888/api/proxy/productos/" + dto.getId()).withRel("Modificar HATEOAS").withType("PUT"));
-                dto.add(Link.of("http://localhost:8888/api/proxy/productos/" + dto.getId()).withRel("Eliminar HATEOAS").withType("DELETE"));
+                dto.add(Link.of("http://localhost:8888/api/proxy/reporte/" + dto.getId()).withSelfRel());
+                dto.add(Link.of("http://localhost:8888/api/proxy/reporte/" + dto.getId()).withRel("Modificar HATEOAS").withType("PUT"));
+                dto.add(Link.of("http://localhost:8888/api/proxy/reporte/" + dto.getId()).withRel("Eliminar HATEOAS").withType("DELETE"));
                 return ResponseEntity.ok(dto);
             })
             .orElse(ResponseEntity.notFound().build());
@@ -80,8 +80,8 @@ public class ReporteController {
 
         for (ReporteDTO dto : lista) {
             
-            dto.add(Link.of("http://localhost:8888/api/proxy/productos").withRel("Get todos HATEOAS"));
-            dto.add(Link.of("http://localhost:8888/api/proxy/productos/" + dto.getId()).withRel("Crear HATEOAS").withType("POST"));
+            dto.add(Link.of("http://localhost:8888/api/proxy/reporte").withRel("Get todos HATEOAS"));
+            dto.add(Link.of("http://localhost:8888/api/proxy/reporte/" + dto.getId()).withRel("Crear HATEOAS").withType("POST"));
         }
 
         return lista;
